@@ -76,12 +76,13 @@ def build_platform_items(final_prompt: str, mode_subtitle: str):
 
     for key, platform in PLATFORMS.items():
         target_url = build_url(key, final_prompt, autosend)
-        enabled_text = "已加入多开" if key in enabled_multi_keys else "未加入多开"
+        enabled_text = "[x]" if key in enabled_multi_keys else "[ ]"
+        subtitle_parts = [part for part in (mode_subtitle, enabled_text, clean_preview(final_prompt, 56)) if part]
         items.append(
             {
                 "uid": f"single_{key}",
                 "title": platform["name"],
-                "subtitle": f"{mode_subtitle} | {enabled_text} | {clean_preview(final_prompt, 56)}",
+                "subtitle": " | ".join(subtitle_parts),
                 "arg": target_url,
                 "variables": {"mode": "single", "final_prompt": final_prompt},
                 "icon": {"path": f"icons/{platform['icon']}"},
@@ -95,10 +96,11 @@ def build_platform_items(final_prompt: str, mode_subtitle: str):
             json.dumps(multi_urls, ensure_ascii=False).encode("utf-8")
         ).decode("ascii")
         display_names = " + ".join(PLATFORMS[key]["name"] for key in enabled_multi_keys)
+        multi_subtitle_parts = [part for part in (mode_subtitle, clean_preview(final_prompt, 48)) if part]
         items.append(
             {
                 "title": f"同时打开 {display_names}",
-                "subtitle": f"{mode_subtitle} | {clean_preview(final_prompt, 48)}",
+                "subtitle": " | ".join(multi_subtitle_parts),
                 "arg": multi_payload,
                 "variables": {"mode": "multi", "final_prompt": final_prompt},
                 "icon": {"path": "icon.png"},
@@ -151,7 +153,7 @@ def resolve_prompt(raw_query: str, clipboard_content: str):
             return final_prompt, f"{PROMPT_TEMPLATES[prefix]['title']} · 剪贴板"
         return "", ""
 
-    return raw_query, "当前输入"
+    return raw_query, ""
 
 
 def main():
