@@ -11,6 +11,7 @@ VERSION_FILE = ROOT / "version"
 INFO_PLIST = ROOT / "info.plist"
 
 SCRIPT_FILTER_UID = "3C36404E-52AD-4EDA-BF07-F48212F037AA"
+SCRIPT_FILTER_ALIAS_UID = "A4E95F8A-C936-4CF2-A09A-6D90D4187F9A"
 CLIPBOARD_UID = "C6A6A36C-5D4C-4557-B528-4E20F7E20D33"
 CONDITIONAL_UID = "4F71C10B-D2A7-47CF-8C38-E4CD7639E4EA"
 OPEN_URL_UID = "270A4A7C-26DB-4492-AE4E-212124822D4D"
@@ -27,7 +28,14 @@ def workflow_variables():
     return variables
 
 
-def script_filter_object():
+def workflow_keywords():
+    keywords = WORKFLOW.get("keywords")
+    if keywords:
+        return keywords
+    return [WORKFLOW["keyword"]]
+
+
+def script_filter_object(uid: str, keyword: str):
     return {
         "config": {
             "alfredfiltersresults": False,
@@ -35,7 +43,7 @@ def script_filter_object():
             "argumenttrimmode": 0,
             "argumenttype": 1,
             "escaping": 102,
-            "keyword": WORKFLOW["keyword"],
+            "keyword": keyword,
             "queuedelaycustom": 1,
             "queuedelayimmediatelyinitially": True,
             "queuedelaymode": 1,
@@ -50,7 +58,7 @@ def script_filter_object():
             "withspace": True,
         },
         "type": "alfred.workflow.input.scriptfilter",
-        "uid": SCRIPT_FILTER_UID,
+        "uid": uid,
         "version": 2,
     }
 
@@ -130,30 +138,40 @@ def open_multi_object():
 
 def build_info():
     version = VERSION_FILE.read_text(encoding="utf-8").strip()
+    keywords = workflow_keywords()
+    script_filter_uids = [SCRIPT_FILTER_UID, SCRIPT_FILTER_ALIAS_UID]
+    script_filters = [
+        script_filter_object(uid, keyword)
+        for uid, keyword in zip(script_filter_uids, keywords)
+    ]
+    connections = {
+        CLIPBOARD_UID: [{"destinationuid": CONDITIONAL_UID, "modifiers": 0, "modifiersubtext": "", "vitoclose": False}],
+        CONDITIONAL_UID: [
+            {"destinationuid": OPEN_URL_UID, "modifiers": 0, "modifiersubtext": "", "sourceoutputuid": SINGLE_OUTPUT_UID, "vitoclose": False},
+            {"destinationuid": OPEN_MULTI_UID, "modifiers": 0, "modifiersubtext": "", "sourceoutputuid": MULTI_OUTPUT_UID, "vitoclose": False},
+        ],
+    }
+    uidata = {
+        SCRIPT_FILTER_UID: {"xpos": 80, "ypos": 140},
+        SCRIPT_FILTER_ALIAS_UID: {"xpos": 80, "ypos": 220},
+        CLIPBOARD_UID: {"xpos": 360, "ypos": 180},
+        CONDITIONAL_UID: {"xpos": 620, "ypos": 180},
+        OPEN_URL_UID: {"xpos": 920, "ypos": 120},
+        OPEN_MULTI_UID: {"xpos": 920, "ypos": 250},
+    }
+    for uid in script_filter_uids[: len(script_filters)]:
+        connections[uid] = [{"destinationuid": CLIPBOARD_UID, "modifiers": 0, "modifiersubtext": "", "vitoclose": False}]
     return {
         "bundleid": WORKFLOW["bundleid"],
         "category": WORKFLOW["category"],
-        "connections": {
-            SCRIPT_FILTER_UID: [{"destinationuid": CLIPBOARD_UID, "modifiers": 0, "modifiersubtext": "", "vitoclose": False}],
-            CLIPBOARD_UID: [{"destinationuid": CONDITIONAL_UID, "modifiers": 0, "modifiersubtext": "", "vitoclose": False}],
-            CONDITIONAL_UID: [
-                {"destinationuid": OPEN_URL_UID, "modifiers": 0, "modifiersubtext": "", "sourceoutputuid": SINGLE_OUTPUT_UID, "vitoclose": False},
-                {"destinationuid": OPEN_MULTI_UID, "modifiers": 0, "modifiersubtext": "", "sourceoutputuid": MULTI_OUTPUT_UID, "vitoclose": False},
-            ],
-        },
+        "connections": connections,
         "createdby": WORKFLOW["createdby"],
         "description": WORKFLOW["description"],
         "disabled": False,
         "name": WORKFLOW["name"],
-        "objects": [script_filter_object(), clipboard_object(), conditional_object(), open_url_object(), open_multi_object()],
+        "objects": script_filters + [clipboard_object(), conditional_object(), open_url_object(), open_multi_object()],
         "readme": WORKFLOW["description"],
-        "uidata": {
-            SCRIPT_FILTER_UID: {"xpos": 80, "ypos": 180},
-            CLIPBOARD_UID: {"xpos": 360, "ypos": 180},
-            CONDITIONAL_UID: {"xpos": 620, "ypos": 180},
-            OPEN_URL_UID: {"xpos": 920, "ypos": 120},
-            OPEN_MULTI_UID: {"xpos": 920, "ypos": 250},
-        },
+        "uidata": uidata,
         "variables": workflow_variables(),
         "version": version,
         "webaddress": WORKFLOW.get("webaddress", ""),
