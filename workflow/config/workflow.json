@@ -1,0 +1,13 @@
+{
+  "name": "Universal AI Prompt",
+  "bundleid": "com.penwyp.ai.prompt",
+  "createdby": "OpenAI Codex CLI",
+  "description": "Dispatch prompt or clipboard content to multiple AI sites from Alfred.",
+  "category": "Productivity",
+  "version": "0.1.0",
+  "keyword": "ai",
+  "script_filter_title": "Universal AI Prompt",
+  "script_filter_subtext": "输入模版前缀或直接提问",
+  "script_filter_running_subtext": "正在组装提示词与目标站点…",
+  "webaddress": ""
+}

@@ -1,0 +1,18 @@
+.DS_Store
+
+# Python cache and local virtual environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Build artifacts
+dist/
+*.alfredworkflow
+
+# Local generated files
+icon.png
+info.plist

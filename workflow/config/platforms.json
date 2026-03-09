@@ -1,0 +1,32 @@
+{
+  "gemini": {
+    "name": "Gemini",
+    "url": "https://gemini.google.com/app?prompt=%s",
+    "icon": "Gemini.icns",
+    "enabled_by_default": true
+  },
+  "chatgpt": {
+    "name": "ChatGPT",
+    "url": "https://chatgpt.com/?prompt=%s",
+    "icon": "ChatGPT.icns",
+    "enabled_by_default": true
+  },
+  "kimi": {
+    "name": "Kimi",
+    "url": "https://kimi.moonshot.cn/?p=%s",
+    "icon": "Kimi.icns",
+    "enabled_by_default": false
+  },
+  "deepseek": {
+    "name": "DeepSeek",
+    "url": "https://chatgpt.com/?q=%s",
+    "icon": "DeepSeek.icns",
+    "enabled_by_default": false
+  },
+  "claude": {
+    "name": "Claude",
+    "url": "https://claude.ai/new?prompt=%s",
+    "icon": "Claude.icns",
+    "enabled_by_default": false
+  }
+}
