@@ -18,5 +18,25 @@
   "doc": {
     "title": "技术文档生成",
     "prompt": "请为以下内容编写结构清晰的技术文档或 PRD 说明，要求逻辑严密、排版精良：\n\n"
+  },
+  "zh": {
+    "title": "翻译为中文",
+    "prompt": "请将以下内容准确翻译为简体中文，保持原意，并根据上下文优化表达的自然度与可读性：\n\n"
+  },
+  "sum": {
+    "title": "总结提炼",
+    "prompt": "请总结以下内容，提炼关键信息、核心结论和重要行动项；输出尽量清晰、精炼、有结构：\n\n"
+  },
+  "en": {
+    "title": "翻译为英文",
+    "prompt": "请将以下内容准确翻译为自然、专业的英文，保持原意，并根据上下文优化表达的流畅度与可读性：\n\n"
+  },
+  "polish": {
+    "title": "润色优化",
+    "prompt": "请在不改变原意的前提下润色以下内容，优化措辞、结构与表达，使其更清晰、自然、专业：\n\n"
+  },
+  "compact": {
+    "title": "压缩 Commit",
+    "prompt": "You are a Git commit message expert who values absolute clarity.\n\nTask: Squash the Git commit messages I provide into a single, comprehensive commit message that strictly follows the Conventional Commits specification.\n\nInput commit messages are provided below.\n\nRules:\n1. Identify the correct change type (feat, fix, refactor, docs, style, test, or chore) and, if appropriate, add an optional scope in parentheses.\n2. Write the first line as <type>(scope?): <subject>\n   - Use the imperative mood.\n   - Limit to 72 characters or fewer.\n3. Insert one blank line after the first line.\n4. Craft the body using up to 6 bullet points, each beginning with \"- \":\n   - Group related changes and summarize significant points.\n   - Preserve the context and intent of the original commits.\n   - Limit each bullet to 100 characters or fewer.\n5. Preserve all issue/PR identifiers exactly as written (for example, #123, JIRA-456).\n6. Keep the tone professional and technical.\n\nIMPORTANT: Output only the consolidated commit message itself. Start directly with the commit type and message.\n\nInput commit messages:\n\n"
   }
 }
