@@ -52,6 +52,12 @@ def platform_url_template(platform_key: str) -> str:
     return env_value(env_name, platform["url"])
 
 
+def platform_browser_app(platform_key: str) -> str:
+    platform = PLATFORMS[platform_key]
+    env_name = f"browser_{platform_key}"
+    return env_value(env_name, platform.get("browser_app", ""))
+
+
 def build_url(platform_key: str, final_prompt: str, autosend: str) -> str:
     encoded_prompt = urllib.parse.quote(final_prompt)
     template = platform_url_template(platform_key)
@@ -65,6 +71,14 @@ def build_url(platform_key: str, final_prompt: str, autosend: str) -> str:
     return f"{base}{encoded_prompt}&autosend={autosend}"
 
 
+def build_open_target(platform_key: str, final_prompt: str, autosend: str):
+    target = {"url": build_url(platform_key, final_prompt, autosend)}
+    browser_app = platform_browser_app(platform_key)
+    if browser_app:
+        target["browser_app"] = browser_app
+    return target
+
+
 def build_platform_items(final_prompt: str, mode_subtitle: str):
     autosend = os.getenv("autosend", "1")
     items = []
@@ -75,7 +89,10 @@ def build_platform_items(final_prompt: str, mode_subtitle: str):
     ]
 
     for key, platform in PLATFORMS.items():
-        target_url = build_url(key, final_prompt, autosend)
+        open_target = build_open_target(key, final_prompt, autosend)
+        single_payload = base64.urlsafe_b64encode(
+            json.dumps([open_target], ensure_ascii=False).encode("utf-8")
+        ).decode("ascii")
         enabled_text = "[x]" if key in enabled_multi_keys else "[ ]"
         subtitle_parts = [part for part in (mode_subtitle, enabled_text, clean_preview(final_prompt, 56)) if part]
         items.append(
@@ -83,7 +100,7 @@ def build_platform_items(final_prompt: str, mode_subtitle: str):
                 "uid": f"single_{key}",
                 "title": platform["name"],
                 "subtitle": " | ".join(subtitle_parts),
-                "arg": target_url,
+                "arg": single_payload,
                 "variables": {"mode": "single", "final_prompt": final_prompt},
                 "icon": {"path": f"icons/{platform['icon']}"},
                 "skipknowledge": True,
@@ -91,9 +108,9 @@ def build_platform_items(final_prompt: str, mode_subtitle: str):
         )
 
     if enabled_multi_keys:
-        multi_urls = [build_url(key, final_prompt, autosend) for key in enabled_multi_keys]
+        multi_targets = [build_open_target(key, final_prompt, autosend) for key in enabled_multi_keys]
         multi_payload = base64.urlsafe_b64encode(
-            json.dumps(multi_urls, ensure_ascii=False).encode("utf-8")
+            json.dumps(multi_targets, ensure_ascii=False).encode("utf-8")
         ).decode("ascii")
         display_names = " + ".join(PLATFORMS[key]["name"] for key in enabled_multi_keys)
         multi_subtitle_parts = [part for part in (mode_subtitle, clean_preview(final_prompt, 48)) if part]

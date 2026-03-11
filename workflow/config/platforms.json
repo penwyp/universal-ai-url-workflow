@@ -8,6 +8,7 @@
   "chatgpt": {
     "name": "ChatGPT",
     "url": "https://chatgpt.com/?prompt=%s",
+    "browser_app": "Google Chrome",
     "icon": "ChatGPT.icns",
     "enabled_by_default": true
   },
@@ -19,7 +20,7 @@
   },
   "deepseek": {
     "name": "DeepSeek",
-    "url": "https://chatgpt.com/?q=%s",
+    "url": "https://chat.deepseek.com/?p=%s",
     "icon": "DeepSeek.icns",
     "enabled_by_default": false
   },

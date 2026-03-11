@@ -135,8 +135,9 @@ make
 - `url_gemini=https://gemini.google.com/app?prompt=%s`
 - `url_chatgpt=https://chatgpt.com/?prompt=%s`
 - `url_kimi=https://kimi.moonshot.cn/?p=%s`
-- `url_deepseek=https://chatgpt.com/?q=%s`
+- `url_deepseek=https://chat.deepseek.com/?p=%s`
 - `url_claude=https://claude.ai/new?prompt=%s`
+- `browser_chatgpt=Google Chrome`
 - `autosend=1`
 
 适用场景：

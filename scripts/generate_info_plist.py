@@ -25,6 +25,7 @@ def workflow_variables():
     for key, platform in PLATFORMS.items():
         variables[f"enable_{key}"] = "1" if platform.get("enabled_by_default", True) else "0"
         variables[f"url_{key}"] = platform["url"]
+        variables[f"browser_{key}"] = platform.get("browser_app", "")
     return variables
 
 
@@ -106,20 +107,6 @@ def conditional_object():
     }
 
 
-def open_url_object():
-    return {
-        "config": {
-            "browser": "",
-            "spaces": "",
-            "url": "{query}",
-            "utf8": True,
-        },
-        "type": "alfred.workflow.action.openurl",
-        "uid": OPEN_URL_UID,
-        "version": 1,
-    }
-
-
 def open_multi_object():
     return {
         "config": {
@@ -147,7 +134,7 @@ def build_info():
     connections = {
         CLIPBOARD_UID: [{"destinationuid": CONDITIONAL_UID, "modifiers": 0, "modifiersubtext": "", "vitoclose": False}],
         CONDITIONAL_UID: [
-            {"destinationuid": OPEN_URL_UID, "modifiers": 0, "modifiersubtext": "", "sourceoutputuid": SINGLE_OUTPUT_UID, "vitoclose": False},
+            {"destinationuid": OPEN_MULTI_UID, "modifiers": 0, "modifiersubtext": "", "sourceoutputuid": SINGLE_OUTPUT_UID, "vitoclose": False},
             {"destinationuid": OPEN_MULTI_UID, "modifiers": 0, "modifiersubtext": "", "sourceoutputuid": MULTI_OUTPUT_UID, "vitoclose": False},
         ],
     }
@@ -156,7 +143,6 @@ def build_info():
         SCRIPT_FILTER_ALIAS_UID: {"xpos": 80, "ypos": 220},
         CLIPBOARD_UID: {"xpos": 360, "ypos": 180},
         CONDITIONAL_UID: {"xpos": 620, "ypos": 180},
-        OPEN_URL_UID: {"xpos": 920, "ypos": 120},
         OPEN_MULTI_UID: {"xpos": 920, "ypos": 250},
     }
     for uid in script_filter_uids[: len(script_filters)]:
@@ -169,7 +155,7 @@ def build_info():
         "description": WORKFLOW["description"],
         "disabled": False,
         "name": WORKFLOW["name"],
-        "objects": script_filters + [clipboard_object(), conditional_object(), open_url_object(), open_multi_object()],
+        "objects": script_filters + [clipboard_object(), conditional_object(), open_multi_object()],
         "readme": WORKFLOW["description"],
         "uidata": uidata,
         "variables": workflow_variables(),

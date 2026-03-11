@@ -20,7 +20,23 @@ def main():
     except Exception:
         return 2
 
-    for url in urls:
+    for item in urls:
+        if isinstance(item, str):
+            subprocess.run(["open", item], check=False)
+            continue
+
+        if not isinstance(item, dict):
+            continue
+
+        url = item.get("url", "").strip()
+        if not url:
+            continue
+
+        browser_app = item.get("browser_app", "").strip()
+        if browser_app:
+            subprocess.run(["open", "-a", browser_app, url], check=False)
+            continue
+
         subprocess.run(["open", url], check=False)
     return 0
 
